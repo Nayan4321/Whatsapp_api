@@ -79,6 +79,45 @@ class WhatsAppCloudService
     }
 
     /**
+     * Upload a local file to Meta and return its media id (for sendMedia with
+     * isId = true). Keeps media private — no public URL is exposed.
+     *
+     * @throws \Illuminate\Http\Client\RequestException
+     */
+    public function uploadMedia(string $absolutePath, string $mime): ?string
+    {
+        $response = Http::withToken($this->number->access_token)
+            ->attach('file', fopen($absolutePath, 'r'), basename($absolutePath), ['Content-Type' => $mime])
+            ->post($this->base().'/'.$this->number->phone_number_id.'/media', [
+                'messaging_product' => 'whatsapp',
+                'type' => $mime,
+            ])
+            ->throw();
+
+        return $response->json('id');
+    }
+
+    /** Send a location pin. */
+    public function sendLocation(string $toWaId, float $lat, float $lng, ?string $name = null, ?string $address = null): array
+    {
+        $location = ['latitude' => $lat, 'longitude' => $lng];
+        if ($name) {
+            $location['name'] = $name;
+        }
+        if ($address) {
+            $location['address'] = $address;
+        }
+
+        return $this->postMessage([
+            'messaging_product' => 'whatsapp',
+            'recipient_type' => 'individual',
+            'to' => $toWaId,
+            'type' => 'location',
+            'location' => $location,
+        ]);
+    }
+
+    /**
      * Send a pre-approved template message (used to start conversations or
      * re-open past the 24h window, and for engagement/broadcast campaigns).
      *

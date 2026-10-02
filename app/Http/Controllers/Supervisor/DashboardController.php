@@ -18,21 +18,19 @@ class DashboardController extends Controller
 
         $stats = [
             'numbers' => WhatsappNumber::count(),
-            'agents' => User::where('role', 'agent')->count(),
-            'open' => Conversation::where('status', 'open')->count(),
+            'contacts' => \App\Models\Contact::count(),
+            'conversations' => Conversation::count(),
             'messages_today' => Message::where('created_at', '>=', $today)->count(),
             'inbound_today' => Message::where('direction', 'in')->where('created_at', '>=', $today)->count(),
             'outbound_today' => Message::where('direction', 'out')->where('created_at', '>=', $today)->count(),
-            'unreviewed_flags' => MessageFlag::where('reviewed', false)->count(),
         ];
 
-        $recentFlags = MessageFlag::with(['message.conversation.contact', 'message.sender'])
-            ->where('reviewed', false)
-            ->latest()
-            ->limit(10)
+        $recentConversations = Conversation::with(['contact', 'number:id,label'])
+            ->orderByDesc('last_message_at')
+            ->limit(12)
             ->get();
 
-        return view('supervisor.dashboard', compact('stats', 'recentFlags'));
+        return view('supervisor.dashboard', compact('stats', 'recentConversations'));
     }
 
     /** Per-agent performance table — the core "are agents working fairly" view. */

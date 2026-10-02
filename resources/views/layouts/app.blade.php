@@ -12,27 +12,21 @@
     <header class="bg-slate-900 text-white">
         <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
             <div class="flex items-center gap-2 font-semibold">
-                <span>💬</span><span class="hidden sm:inline">Team Inbox</span>
+                <span>👁️</span><span class="hidden sm:inline">WhatsApp Monitor</span>
             </div>
             <nav class="flex items-center gap-1 text-sm">
                 @auth
                     @if(auth()->user()->isSupervisor())
                         <a href="{{ route('supervisor.dashboard') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Dashboard</a>
-                        <a href="{{ route('supervisor.conversations') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Conversations</a>
-                        <a href="{{ route('supervisor.agents') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Agents</a>
-                        <a href="{{ route('supervisor.flags') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Flags</a>
-                        <a href="{{ route('supervisor.audit') }}" class="px-3 py-1.5 rounded hover:bg-white/10 hidden md:inline">Audit</a>
+                        <a href="{{ route('supervisor.conversations') }}" class="px-3 py-1.5 rounded bg-indigo-500 hover:bg-indigo-600">Conversations</a>
                     @endif
                     @if(auth()->user()->isOwner())
                         <span class="mx-1 text-white/30">|</span>
-                        <a href="{{ route('settings.guide') }}" class="px-3 py-1.5 rounded bg-indigo-500 hover:bg-indigo-600">Setup Guide</a>
+                        <a href="{{ route('settings.guide') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Setup Guide</a>
                         <a href="{{ route('settings.numbers.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Numbers</a>
-                        <a href="{{ route('settings.users.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Users</a>
-                        <a href="{{ route('settings.flag-rules.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10 hidden md:inline">Rules</a>
-                        <a href="{{ route('settings.canned.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10 hidden md:inline">Replies</a>
+                        <a href="{{ route('settings.users.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10 hidden md:inline">Viewers</a>
                     @endif
-                    <a href="{{ route('inbox') }}" class="px-3 py-1.5 rounded bg-indigo-500 hover:bg-indigo-600 ml-1">Inbox</a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
+                    <form method="POST" action="{{ route('logout') }}" class="inline ml-1">@csrf
                         <button class="px-3 py-1.5 rounded hover:bg-white/10">Logout</button>
                     </form>
                 @endauth

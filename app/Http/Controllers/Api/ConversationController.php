@@ -97,6 +97,51 @@ class ConversationController extends Controller
         return response()->json(['id' => $message->id, 'status' => $message->status], 201);
     }
 
+    /** Send an uploaded media file (image / video / document / audio). */
+    public function sendMedia(Request $request, Conversation $conversation, OutboundMessageService $outbound)
+    {
+        $this->authorizeAccess($request, $conversation);
+
+        $request->validate([
+            // up to 16 MB; documents up to ~100MB on Meta but keep uploads sane.
+            'file' => ['required', 'file', 'max:16384'],
+            'caption' => ['nullable', 'string', 'max:1024'],
+        ]);
+
+        try {
+            $message = $outbound->sendMedia($conversation, $request->user(), $request->file('file'), $request->input('caption'));
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => 'Failed to send: '.$e->getMessage()], 502);
+        }
+
+        return response()->json(['id' => $message->id, 'status' => $message->status], 201);
+    }
+
+    /** Send a location pin. */
+    public function sendLocation(Request $request, Conversation $conversation, OutboundMessageService $outbound)
+    {
+        $this->authorizeAccess($request, $conversation);
+
+        $data = $request->validate([
+            'lat' => ['required', 'numeric', 'between:-90,90'],
+            'lng' => ['required', 'numeric', 'between:-180,180'],
+            'name' => ['nullable', 'string', 'max:255'],
+            'address' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        try {
+            $message = $outbound->sendLocation($conversation, $request->user(), (float) $data['lat'], (float) $data['lng'], $data['name'] ?? null, $data['address'] ?? null);
+        } catch (\RuntimeException $e) {
+            return response()->json(['message' => $e->getMessage()], 422);
+        } catch (\Throwable $e) {
+            return response()->json(['message' => 'Failed to send: '.$e->getMessage()], 502);
+        }
+
+        return response()->json(['id' => $message->id, 'status' => $message->status], 201);
+    }
+
     public function assign(Request $request, Conversation $conversation)
     {
         $this->authorizeAccess($request, $conversation);

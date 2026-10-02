@@ -69,6 +69,112 @@ class OutboundMessageService
         return $message;
     }
 
+    /**
+     * Send a media file (image / video / document / audio) that an agent
+     * uploaded. The file is stored locally (for the transcript) and uploaded
+     * to Meta, then sent by media id so nothing is publicly exposed.
+     */
+    public function sendMedia(Conversation $conversation, User $agent, \Illuminate\Http\UploadedFile $file, ?string $caption = null): Message
+    {
+        if (! $conversation->windowOpen()) {
+            throw new \RuntimeException('The 24-hour reply window is closed. Send a template message to re-open the conversation.');
+        }
+
+        $number = $conversation->number;
+        $contact = $conversation->contact;
+        $mime = $file->getMimeType() ?: 'application/octet-stream';
+        $type = $this->mediaType($mime);
+
+        // Store a copy for the monitored transcript.
+        $path = $file->store('wa-media/out/'.$number->id, 'public');
+        $absolute = \Illuminate\Support\Facades\Storage::disk('public')->path($path);
+
+        $message = Message::create([
+            'conversation_id' => $conversation->id,
+            'whatsapp_number_id' => $number->id,
+            'sender_user_id' => $agent->id,
+            'direction' => 'out',
+            'type' => $type,
+            'body' => $caption,
+            'media_path' => $path,
+            'media_mime' => $mime,
+            'status' => 'queued',
+            'sent_at' => now(),
+        ]);
+
+        if ($caption) {
+            $this->flags->scan($message);
+        }
+
+        try {
+            $mediaId = WhatsAppCloudService::for($number)->uploadMedia($absolute, $mime);
+            $result = WhatsAppCloudService::for($number)->sendMedia($contact->wa_id, $type, $mediaId, $caption, true);
+            $message->update(['wamid' => data_get($result, 'messages.0.id'), 'status' => 'sent', 'raw' => $result]);
+        } catch (\Throwable $e) {
+            $message->update(['status' => 'failed', 'error' => $this->errorMessage($e)]);
+            throw $e;
+        }
+
+        $this->touch($conversation, $agent);
+        AuditLogger::log('sent_media', $conversation, ['message_id' => $message->id, 'type' => $type]);
+
+        return $message;
+    }
+
+    /** Send a location pin. */
+    public function sendLocation(Conversation $conversation, User $agent, float $lat, float $lng, ?string $name = null, ?string $address = null): Message
+    {
+        if (! $conversation->windowOpen()) {
+            throw new \RuntimeException('The 24-hour reply window is closed. Send a template message to re-open the conversation.');
+        }
+
+        $number = $conversation->number;
+        $contact = $conversation->contact;
+
+        $message = Message::create([
+            'conversation_id' => $conversation->id,
+            'whatsapp_number_id' => $number->id,
+            'sender_user_id' => $agent->id,
+            'direction' => 'out',
+            'type' => 'location',
+            'body' => trim(($name ? $name.' ' : '')."($lat, $lng)"),
+            'status' => 'queued',
+            'sent_at' => now(),
+        ]);
+
+        try {
+            $result = WhatsAppCloudService::for($number)->sendLocation($contact->wa_id, $lat, $lng, $name, $address);
+            $message->update(['wamid' => data_get($result, 'messages.0.id'), 'status' => 'sent', 'raw' => $result]);
+        } catch (\Throwable $e) {
+            $message->update(['status' => 'failed', 'error' => $this->errorMessage($e)]);
+            throw $e;
+        }
+
+        $this->touch($conversation, $agent);
+        AuditLogger::log('sent_location', $conversation, ['message_id' => $message->id]);
+
+        return $message;
+    }
+
+    protected function mediaType(string $mime): string
+    {
+        return match (true) {
+            str_starts_with($mime, 'image/') => 'image',
+            str_starts_with($mime, 'video/') => 'video',
+            str_starts_with($mime, 'audio/') => 'audio',
+            default => 'document',
+        };
+    }
+
+    protected function touch(Conversation $conversation, User $agent): void
+    {
+        $conversation->forceFill([
+            'last_message_at' => now(),
+            'assigned_user_id' => $conversation->assigned_user_id ?: $agent->id,
+            'status' => $conversation->status === 'resolved' ? 'open' : $conversation->status,
+        ])->save();
+    }
+
     /** Start/re-open a conversation with an approved template message. */
     public function sendTemplate(Conversation $conversation, User $agent, string $template, string $language, array $components = []): Message
     {

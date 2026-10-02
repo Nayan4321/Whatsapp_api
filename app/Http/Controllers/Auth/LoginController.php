@@ -13,7 +13,7 @@ class LoginController extends Controller
     public function show()
     {
         if (Auth::check()) {
-            return redirect('/inbox');
+            return redirect('/supervisor');
         }
 
         return view('auth.login');
@@ -42,7 +42,7 @@ class LoginController extends Controller
         $request->session()->regenerate();
         AuditLogger::log('login');
 
-        return redirect()->intended($request->user()->isSupervisor() ? '/supervisor' : '/inbox');
+        return redirect()->intended('/supervisor');
     }
 
     public function logout(Request $request)

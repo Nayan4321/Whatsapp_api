@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>@yield('title', 'Team Inbox')</title>
+    <title>@yield('title', 'WhatsApp Monitor')</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="h-full bg-slate-100 text-slate-800">
@@ -11,7 +11,7 @@
         <div class="w-full max-w-md">
             <div class="text-center mb-6">
                 <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-indigo-500 text-white text-2xl shadow">💬</div>
-                <h1 class="mt-3 text-xl font-semibold">Team Inbox</h1>
+                <h1 class="mt-3 text-xl font-semibold">WhatsApp Monitor</h1>
             </div>
             <div class="bg-white rounded-2xl shadow p-6">
                 @if (session('status'))

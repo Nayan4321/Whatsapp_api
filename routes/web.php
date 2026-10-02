@@ -37,7 +37,7 @@ Route::get('/login', [LoginController::class, 'show'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->middleware('throttle:10,1');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::get('/', fn () => redirect(auth()->check() ? '/inbox' : '/login'));
+Route::get('/', fn () => redirect(auth()->check() ? '/supervisor' : '/login'));
 
 // ---------------------------------------------------------------------------
 // Authenticated app
@@ -54,6 +54,8 @@ Route::middleware('auth')->group(function () {
         Route::get('/conversations', [ConversationController::class, 'index']);
         Route::get('/conversations/{conversation}', [ConversationController::class, 'show']);
         Route::post('/conversations/{conversation}/messages', [ConversationController::class, 'sendMessage']);
+        Route::post('/conversations/{conversation}/media', [ConversationController::class, 'sendMedia']);
+        Route::post('/conversations/{conversation}/location', [ConversationController::class, 'sendLocation']);
         Route::post('/conversations/{conversation}/assign', [ConversationController::class, 'assign']);
         Route::post('/conversations/{conversation}/resolve', [ConversationController::class, 'resolve']);
     });

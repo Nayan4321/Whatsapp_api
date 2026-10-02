@@ -75,7 +75,13 @@
 
                 <div class="border-t bg-slate-50 p-2 shrink-0">
                     <div id="cannedBar" class="flex gap-1 overflow-x-auto pb-1 mb-1"></div>
-                    <form id="sendForm" class="flex gap-2 items-end">
+                    <form id="sendForm" class="flex gap-1.5 items-end">
+                        <input type="file" id="fileInput" class="hidden"
+                               accept="image/*,video/*,application/pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx">
+                        <button type="button" id="attachBtn" title="Send photo, video or document"
+                            class="w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 shrink-0 text-lg">📎</button>
+                        <button type="button" id="locBtn" title="Send my current location"
+                            class="w-10 h-10 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-700 shrink-0 text-lg">📍</button>
                         <textarea id="msgInput" rows="1" placeholder="Type a message"
                             class="flex-1 resize-none border rounded-2xl px-4 py-2 text-sm max-h-32"></textarea>
                         <button id="sendBtn" class="w-10 h-10 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shrink-0">➤</button>
@@ -212,8 +218,15 @@ function bubble(m) {
     wrap.className = 'flex ' + (out ? 'justify-end' : 'justify-start');
     let media = '';
     if (m.media_url) {
-        if ((m.type === 'image')) media = `<a href="${m.media_url}" target="_blank"><img src="${m.media_url}" class="rounded-lg max-w-[200px] mb-1"></a>`;
+        if (m.type === 'image') media = `<a href="${m.media_url}" target="_blank"><img src="${m.media_url}" class="rounded-lg max-w-[200px] mb-1"></a>`;
+        else if (m.type === 'video') media = `<video src="${m.media_url}" controls class="rounded-lg max-w-[220px] mb-1"></video>`;
         else media = `<a href="${m.media_url}" target="_blank" class="text-blue-600 underline text-sm block mb-1">📎 ${esc(m.type)}</a>`;
+    }
+    if (m.type === 'location') {
+        const nums = (m.body || '').match(/-?\d+\.\d+/g);
+        if (nums && nums.length >= 2) {
+            media = `<a href="https://maps.google.com/?q=${nums[0]},${nums[1]}" target="_blank" class="text-blue-600 underline text-sm block mb-1">📍 View location on map</a>`;
+        }
     }
     wrap.innerHTML = `
         <div class="max-w-[75%] rounded-lg px-3 py-2 shadow-sm ${out ? 'bubble-out' : 'bubble-in'}">
@@ -244,6 +257,49 @@ document.getElementById('msgInput').addEventListener('keydown', e => {
 });
 function autoGrow(el){ el.style.height='auto'; el.style.height=Math.min(el.scrollHeight,128)+'px'; }
 document.getElementById('msgInput').addEventListener('input', e => autoGrow(e.target));
+
+// Attach: photo / video / document
+document.getElementById('attachBtn').addEventListener('click', () => {
+    if (!current) return;
+    document.getElementById('fileInput').click();
+});
+document.getElementById('fileInput').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!file || !current) return;
+    if (file.size > 16 * 1024 * 1024) { alert('File too large (max 16 MB).'); e.target.value=''; return; }
+    const caption = document.getElementById('msgInput').value.trim();
+    const fd = new FormData();
+    fd.append('file', file);
+    if (caption) fd.append('caption', caption);
+    document.getElementById('attachBtn').disabled = true;
+    // FormData upload: don't set Content-Type (browser sets the multipart boundary)
+    const res = await fetch('/api/conversations/' + current + '/media', {
+        method: 'POST',
+        headers: {'Accept':'application/json','X-CSRF-TOKEN':CSRF,'X-Requested-With':'XMLHttpRequest'},
+        body: fd,
+    });
+    document.getElementById('attachBtn').disabled = false;
+    e.target.value = '';
+    if (res.ok) { document.getElementById('msgInput').value=''; await refreshChat(); }
+    else { const err = await res.json().catch(()=>({})); alert(err.message || 'Upload failed'); }
+});
+
+// Location: send current position
+document.getElementById('locBtn').addEventListener('click', () => {
+    if (!current) return;
+    if (!navigator.geolocation) { alert('Location not supported on this device.'); return; }
+    document.getElementById('locBtn').disabled = true;
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+        const r = await api('/api/conversations/' + current + '/location', {method:'POST',
+            body: JSON.stringify({lat: pos.coords.latitude, lng: pos.coords.longitude})});
+        document.getElementById('locBtn').disabled = false;
+        if (r && r.ok) await refreshChat();
+        else { const err = r ? await r.json().catch(()=>({})) : {}; alert(err.message || 'Could not send location'); }
+    }, () => {
+        document.getElementById('locBtn').disabled = false;
+        alert('Could not get your location (permission denied).');
+    });
+});
 
 document.getElementById('resolveBtn').addEventListener('click', async () => {
     const reopen = document.getElementById('resolveBtn').dataset.status === 'resolved';

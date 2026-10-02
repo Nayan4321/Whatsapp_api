@@ -55,9 +55,63 @@ class WebhookProcessor
             $this->ingestInbound($number, $msg, $profiles);
         }
 
+        // Coexistence: messages an agent sends from the WhatsApp Business app are
+        // delivered here as echoes. This is how we capture the agent side.
+        foreach (Arr::get($value, 'message_echoes', []) as $echo) {
+            $this->ingestEcho($number, $echo);
+        }
+
         foreach (Arr::get($value, 'statuses', []) as $status) {
             $this->applyStatus($status);
         }
+    }
+
+    /** Store an outbound message the agent sent from their WhatsApp Business app. */
+    protected function ingestEcho(WhatsappNumber $number, array $echo): void
+    {
+        $toWaId = Arr::get($echo, 'to');
+        $wamid = Arr::get($echo, 'id');
+        if (! $toWaId || ! $wamid) {
+            return;
+        }
+
+        if (Message::where('wamid', $wamid)->exists()) {
+            return; // idempotent
+        }
+
+        $contact = Contact::firstOrCreate(
+            ['whatsapp_number_id' => $number->id, 'wa_id' => $toWaId],
+        );
+
+        $ts = Carbon::createFromTimestamp((int) Arr::get($echo, 'timestamp', time()));
+
+        $conversation = Conversation::firstOrCreate(
+            ['whatsapp_number_id' => $number->id, 'contact_id' => $contact->id],
+            ['status' => 'open'],
+        );
+
+        [$type, $body, $mediaInfo] = $this->extractContent($number, $echo);
+
+        Message::create([
+            'conversation_id' => $conversation->id,
+            'whatsapp_number_id' => $number->id,
+            'wamid' => $wamid,
+            'direction' => 'out',
+            'type' => $type,
+            'body' => $body,
+            'media_path' => $mediaInfo[0] ?? null,
+            'media_mime' => $mediaInfo[1] ?? null,
+            'status' => 'sent',
+            'sent_at' => $ts,
+            'raw' => $echo,
+        ]);
+
+        $conversation->forceFill([
+            'last_message_at' => $ts,
+            'status' => $conversation->status === 'resolved' ? 'open' : $conversation->status,
+        ])->save();
+
+        $contact->update(['last_message_at' => $ts]);
     }
 
     protected function ingestInbound(WhatsappNumber $number, array $msg, array $profiles): void
