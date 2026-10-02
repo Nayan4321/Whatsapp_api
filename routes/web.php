@@ -72,6 +72,7 @@ Route::middleware('auth')->group(function () {
 
     // Owner-only settings.
     Route::middleware('role:owner')->prefix('settings')->name('settings.')->group(function () {
+        Route::get('guide', [\App\Http\Controllers\GuideController::class, 'index'])->name('guide');
         Route::resource('numbers', NumberAdminController::class)->except(['show']);
         Route::resource('users', UserAdminController::class)->except(['show']);
         Route::resource('flag-rules', FlagRuleController::class)->except(['show'])->parameters(['flag-rules' => 'flagRule']);

@@ -25,6 +25,7 @@
                     @endif
                     @if(auth()->user()->isOwner())
                         <span class="mx-1 text-white/30">|</span>
+                        <a href="{{ route('settings.guide') }}" class="px-3 py-1.5 rounded bg-indigo-500 hover:bg-indigo-600">Setup Guide</a>
                         <a href="{{ route('settings.numbers.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Numbers</a>
                         <a href="{{ route('settings.users.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10">Users</a>
                         <a href="{{ route('settings.flag-rules.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10 hidden md:inline">Rules</a>

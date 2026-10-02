@@ -3,6 +3,10 @@
 @section('heading','Team Numbers')
 @section('actions')<a href="{{ route('settings.numbers.create') }}" class="text-sm px-3 py-1.5 rounded bg-indigo-500 text-white">+ Add number</a>@endsection
 @section('content')
+<div class="mb-4 rounded-lg bg-indigo-50 border border-indigo-200 px-4 py-3 text-sm">
+    Need the Phone number ID, WABA ID, access token or your webhook URL?
+    See the <a href="{{ route('settings.guide') }}" class="text-indigo-600 underline font-medium">Setup Guide</a>.
+</div>
 <div class="bg-white rounded-xl shadow overflow-x-auto">
 <table class="w-full text-sm"><thead class="text-left text-slate-500 border-b"><tr>
     <th class="px-4 py-2">Label</th><th class="px-4 py-2">Display</th><th class="px-4 py-2">phone_number_id</th>
