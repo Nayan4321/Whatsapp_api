@@ -28,6 +28,6 @@
         </div>
     </div>
     <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="is_active" value="1" @checked(old('is_active',$number->is_active ?? true)) class="rounded"> Active</label>
-    <div class="flex gap-2"><button class="px-4 py-2 rounded-lg bg-emerald-500 text-white">Save</button><a href="{{ route('settings.numbers.index') }}" class="px-4 py-2 rounded-lg border">Cancel</a></div>
+    <div class="flex gap-2"><button class="px-4 py-2 rounded-lg bg-indigo-500 text-white">Save</button><a href="{{ route('settings.numbers.index') }}" class="px-4 py-2 rounded-lg border">Cancel</a></div>
 </form>
 @endsection

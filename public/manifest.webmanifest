@@ -1,7 +1,7 @@
 {
-    "name": "WhatsApp Team Platform",
+    "name": "Team Inbox",
     "short_name": "Team Inbox",
-    "description": "Agent inbox for company WhatsApp sales numbers",
+    "description": "Agent inbox for company sales numbers",
     "start_url": "/inbox",
     "scope": "/",
     "display": "standalone",

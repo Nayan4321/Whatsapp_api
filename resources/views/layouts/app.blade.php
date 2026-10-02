@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@yield('title', 'Admin') · WhatsApp Team Platform</title>
+    <title>@yield('title', 'Admin') · Team Inbox</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="h-full bg-slate-100 text-slate-800">
@@ -12,7 +12,7 @@
     <header class="bg-slate-900 text-white">
         <div class="max-w-6xl mx-auto px-4 flex items-center justify-between h-14">
             <div class="flex items-center gap-2 font-semibold">
-                <span>💬</span><span class="hidden sm:inline">WhatsApp Team Platform</span>
+                <span>💬</span><span class="hidden sm:inline">Team Inbox</span>
             </div>
             <nav class="flex items-center gap-1 text-sm">
                 @auth
@@ -30,7 +30,7 @@
                         <a href="{{ route('settings.flag-rules.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10 hidden md:inline">Rules</a>
                         <a href="{{ route('settings.canned.index') }}" class="px-3 py-1.5 rounded hover:bg-white/10 hidden md:inline">Replies</a>
                     @endif
-                    <a href="{{ route('inbox') }}" class="px-3 py-1.5 rounded bg-emerald-500 hover:bg-emerald-600 ml-1">Inbox</a>
+                    <a href="{{ route('inbox') }}" class="px-3 py-1.5 rounded bg-indigo-500 hover:bg-indigo-600 ml-1">Inbox</a>
                     <form method="POST" action="{{ route('logout') }}" class="inline">@csrf
                         <button class="px-3 py-1.5 rounded hover:bg-white/10">Logout</button>
                     </form>
@@ -41,7 +41,7 @@
 
     <main class="max-w-6xl mx-auto px-4 py-6">
         @if (session('status'))
-            <div class="mb-4 rounded-lg bg-emerald-50 text-emerald-700 px-4 py-2 text-sm">{{ session('status') }}</div>
+            <div class="mb-4 rounded-lg bg-indigo-50 text-indigo-700 px-4 py-2 text-sm">{{ session('status') }}</div>
         @endif
         @if ($errors->any())
             <div class="mb-4 rounded-lg bg-red-50 text-red-700 px-4 py-2 text-sm">

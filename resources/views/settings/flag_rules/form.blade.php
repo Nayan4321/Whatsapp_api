@@ -7,7 +7,7 @@
     <div><label class="block text-sm font-medium mb-1">Rule name *</label>
         <input name="name" value="{{ old('name',$flagRule->name) }}" required class="w-full border rounded-lg px-3 py-2" placeholder="Sharing personal number"></div>
     <div><label class="block text-sm font-medium mb-1">Keywords / phrases (comma-separated) *</label>
-        <textarea name="keywords" rows="3" required class="w-full border rounded-lg px-3 py-2" placeholder="my number, whatsapp me on, call me on, discount, free">{{ old('keywords',$flagRule->keywords) }}</textarea></div>
+        <textarea name="keywords" rows="3" required class="w-full border rounded-lg px-3 py-2" placeholder="my number, message me on, call me on, discount, free">{{ old('keywords',$flagRule->keywords) }}</textarea></div>
     <div class="grid md:grid-cols-2 gap-4">
         <div><label class="block text-sm font-medium mb-1">Applies to</label>
             <select name="applies_to" class="w-full border rounded-lg px-3 py-2">
@@ -20,6 +20,6 @@
             </select></div>
     </div>
     <label class="flex items-center gap-2 text-sm"><input type="checkbox" name="is_active" value="1" @checked(old('is_active',$flagRule->is_active ?? true)) class="rounded"> Active</label>
-    <div class="flex gap-2"><button class="px-4 py-2 rounded-lg bg-emerald-500 text-white">Save</button><a href="{{ route('settings.flag-rules.index') }}" class="px-4 py-2 rounded-lg border">Cancel</a></div>
+    <div class="flex gap-2"><button class="px-4 py-2 rounded-lg bg-indigo-500 text-white">Save</button><a href="{{ route('settings.flag-rules.index') }}" class="px-4 py-2 rounded-lg border">Cancel</a></div>
 </form>
 @endsection

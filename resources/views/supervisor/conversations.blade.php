@@ -20,7 +20,7 @@
         </select></div>
     <div><label class="block text-xs text-slate-500">Search</label>
         <input name="q" value="{{ request('q') }}" class="border rounded px-2 py-1.5 text-sm" placeholder="name / number"></div>
-    <button class="px-3 py-1.5 rounded bg-emerald-500 text-white text-sm">Filter</button>
+    <button class="px-3 py-1.5 rounded bg-indigo-500 text-white text-sm">Filter</button>
 </form>
 
 <div class="bg-white rounded-xl shadow overflow-x-auto">
@@ -35,9 +35,9 @@
             <td class="px-4 py-2 font-medium">{{ $c->contact?->displayName() }}</td>
             <td class="px-4 py-2">{{ $c->number->label ?? '' }}</td>
             <td class="px-4 py-2">{{ $c->assignedAgent->name ?? '—' }}</td>
-            <td class="px-4 py-2"><span class="text-xs px-2 py-0.5 rounded-full {{ $c->status==='open'?'bg-emerald-100':'bg-slate-200' }}">{{ $c->status }}</span></td>
+            <td class="px-4 py-2"><span class="text-xs px-2 py-0.5 rounded-full {{ $c->status==='open'?'bg-indigo-100':'bg-slate-200' }}">{{ $c->status }}</span></td>
             <td class="px-4 py-2 text-slate-500 text-xs">{{ $c->last_message_at?->diffForHumans() }}</td>
-            <td class="px-4 py-2 text-right"><a href="{{ route('supervisor.conversation',$c) }}" class="text-emerald-600">View →</a></td>
+            <td class="px-4 py-2 text-right"><a href="{{ route('supervisor.conversation',$c) }}" class="text-indigo-600">View →</a></td>
         </tr>
     @empty
         <tr><td colspan="6" class="px-4 py-6 text-center text-slate-400">No conversations</td></tr>

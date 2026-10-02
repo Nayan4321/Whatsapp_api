@@ -16,7 +16,7 @@
     @forelse($agents as $a)
         <tr>
             <td class="px-4 py-2"><div class="font-medium">{{ $a['name'] }}</div><div class="text-xs text-slate-400">{{ $a['email'] }}</div></td>
-            <td class="px-4 py-2">@if($a['active'])<span class="text-emerald-600 text-xs">● active</span>@else<span class="text-slate-400 text-xs">● off</span>@endif</td>
+            <td class="px-4 py-2">@if($a['active'])<span class="text-indigo-600 text-xs">● active</span>@else<span class="text-slate-400 text-xs">● off</span>@endif</td>
             <td class="px-4 py-2">{{ $a['sent_7d'] }}</td>
             <td class="px-4 py-2">{{ $a['assigned'] }}</td>
             <td class="px-4 py-2">{{ $a['open_assigned'] }}</td>

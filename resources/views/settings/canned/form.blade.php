@@ -16,6 +16,6 @@
         <select name="whatsapp_number_id" class="w-full border rounded-lg px-3 py-2"><option value="">All numbers</option>
             @foreach($numbers as $n)<option value="{{ $n->id }}" @selected(old('whatsapp_number_id',$cannedReply->whatsapp_number_id)==$n->id)>{{ $n->label }}</option>@endforeach
         </select></div>
-    <div class="flex gap-2"><button class="px-4 py-2 rounded-lg bg-emerald-500 text-white">Save</button><a href="{{ route('settings.canned.index') }}" class="px-4 py-2 rounded-lg border">Cancel</a></div>
+    <div class="flex gap-2"><button class="px-4 py-2 rounded-lg bg-indigo-500 text-white">Save</button><a href="{{ route('settings.canned.index') }}" class="px-4 py-2 rounded-lg border">Cancel</a></div>
 </form>
 @endsection

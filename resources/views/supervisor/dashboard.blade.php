@@ -6,7 +6,7 @@
     @php($cards = [
         ['Numbers',$stats['numbers'],'bg-slate-700'],
         ['Agents',$stats['agents'],'bg-slate-700'],
-        ['Open chats',$stats['open'],'bg-emerald-600'],
+        ['Open chats',$stats['open'],'bg-indigo-600'],
         ['Unreviewed flags',$stats['unreviewed_flags'],'bg-red-600'],
         ['Messages today',$stats['messages_today'],'bg-blue-600'],
         ['Inbound today',$stats['inbound_today'],'bg-indigo-600'],
@@ -23,7 +23,7 @@
 <div class="bg-white rounded-xl shadow">
     <div class="px-4 py-3 border-b flex items-center justify-between">
         <h2 class="font-semibold">Latest unreviewed flags</h2>
-        <a href="{{ route('supervisor.flags') }}" class="text-sm text-emerald-600">View all →</a>
+        <a href="{{ route('supervisor.flags') }}" class="text-sm text-indigo-600">View all →</a>
     </div>
     <table class="w-full text-sm">
         <thead class="text-left text-slate-500 border-b">
@@ -39,7 +39,7 @@
                 <td class="px-4 py-2">
                     <span class="text-xs px-2 py-0.5 rounded-full {{ ['low'=>'bg-slate-200','medium'=>'bg-amber-200','high'=>'bg-red-200'][$flag->severity] ?? 'bg-slate-200' }}">{{ $flag->severity }}</span>
                 </td>
-                <td class="px-4 py-2 text-right"><a class="text-emerald-600" href="{{ route('supervisor.conversation',$flag->message->conversation_id) }}">Open</a></td>
+                <td class="px-4 py-2 text-right"><a class="text-indigo-600" href="{{ route('supervisor.conversation',$flag->message->conversation_id) }}">Open</a></td>
             </tr>
         @empty
             <tr><td colspan="6" class="px-4 py-6 text-center text-slate-400">No flags 🎉</td></tr>

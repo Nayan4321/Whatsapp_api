@@ -8,7 +8,7 @@
     </select>
     <select name="state" class="border rounded px-2 py-1.5"><option value="">All</option>
         <option value="open" @selected(request('state')=='open')>Unreviewed only</option></select>
-    <button class="px-3 py-1.5 rounded bg-emerald-500 text-white">Filter</button>
+    <button class="px-3 py-1.5 rounded bg-indigo-500 text-white">Filter</button>
 </form>
 <div class="bg-white rounded-xl shadow overflow-x-auto">
 <table class="w-full text-sm">
@@ -26,7 +26,7 @@
             <td class="px-4 py-2 max-w-xs truncate">{{ \Illuminate\Support\Str::limit($f->message->body, 60) }}</td>
             <td class="px-4 py-2"><span class="text-xs px-2 py-0.5 rounded-full {{ ['low'=>'bg-slate-200','medium'=>'bg-amber-200','high'=>'bg-red-200'][$f->severity] ?? 'bg-slate-200' }}">{{ $f->severity }}</span></td>
             <td class="px-4 py-2 text-right whitespace-nowrap">
-                <a href="{{ route('supervisor.conversation',$f->message->conversation_id) }}" class="text-emerald-600 mr-2">Open</a>
+                <a href="{{ route('supervisor.conversation',$f->message->conversation_id) }}" class="text-indigo-600 mr-2">Open</a>
                 @unless($f->reviewed)
                 <form method="POST" action="{{ route('supervisor.flags.review',$f) }}" class="inline">@csrf<button class="text-slate-500">Mark reviewed</button></form>
                 @endunless

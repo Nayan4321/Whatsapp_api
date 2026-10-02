@@ -14,11 +14,11 @@
         </div>
     </div>
 </div>
-<div class="chat-bg rounded-xl p-4 space-y-2" style="background:#efeae2">
+<div class="chat-bg rounded-xl p-4 space-y-2" style="background:#f1f5f9">
 @foreach($messages as $m)
     <div class="flex {{ $m->direction==='out'?'justify-end':'justify-start' }}">
-        <div class="max-w-[75%] rounded-lg px-3 py-2 shadow-sm {{ $m->direction==='out'?'bg-[#d9fdd3]':'bg-white' }}">
-            @if($m->direction==='out' && $m->sender)<div class="text-[11px] font-medium text-emerald-700 mb-0.5">{{ $m->sender->name }}</div>@endif
+        <div class="max-w-[75%] rounded-lg px-3 py-2 shadow-sm {{ $m->direction==='out'?'bg-[#e0e7ff]':'bg-white' }}">
+            @if($m->direction==='out' && $m->sender)<div class="text-[11px] font-medium text-indigo-700 mb-0.5">{{ $m->sender->name }}</div>@endif
             @if($m->media_path)
                 @if($m->type==='image')<a href="{{ asset('storage/'.$m->media_path) }}" target="_blank"><img src="{{ asset('storage/'.$m->media_path) }}" class="rounded max-w-[200px] mb-1"></a>
                 @else<a href="{{ asset('storage/'.$m->media_path) }}" class="text-blue-600 underline text-sm">📎 {{ $m->type }}</a>@endif
@@ -32,6 +32,6 @@
     </div>
 @endforeach
 </div>
-<style>.chat-bg{background-image:radial-gradient(#d9d2c7 .5px,transparent .5px);background-size:12px 12px}</style>
+<style>.chat-bg{background-image:radial-gradient(#cbd5e1 .5px,transparent .5px);background-size:12px 12px}</style>
 <a href="{{ url()->previous() }}" class="inline-block mt-4 text-sm text-slate-500">← Back</a>
 @endsection

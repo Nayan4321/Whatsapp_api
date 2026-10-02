@@ -1,4 +1,4 @@
-# WhatsApp Team Platform
+# Team Inbox
 
 A **team inbox + agent-monitoring platform** for a company's WhatsApp **sales
 numbers**, built on the official **WhatsApp Business Cloud API** (Meta) with

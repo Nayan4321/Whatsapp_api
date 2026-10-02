@@ -23,6 +23,6 @@
         <label class="block text-sm font-medium mb-1">Confirm password</label>
         <input name="password_confirmation" type="password" required class="w-full rounded-lg border border-slate-300 px-3 py-2">
     </div>
-    <button class="w-full rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white py-2 font-medium">Run setup</button>
+    <button class="w-full rounded-lg bg-indigo-500 hover:bg-indigo-600 text-white py-2 font-medium">Run setup</button>
 </form>
 @endsection

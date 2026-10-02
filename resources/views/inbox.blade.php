@@ -5,15 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <meta name="theme-color" content="#0f172a">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>Inbox · WhatsApp Team Platform</title>
+    <title>Inbox · Team Inbox</title>
     <link rel="manifest" href="/manifest.webmanifest">
     <link rel="apple-touch-icon" href="/icons/icon-192.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         html, body { height: 100%; overscroll-behavior: none; }
-        .chat-bg { background-color:#efeae2; background-image:radial-gradient(#d9d2c7 0.5px, transparent 0.5px); background-size:12px 12px; }
+        .chat-bg { background-color:#f1f5f9; background-image:radial-gradient(#cbd5e1 0.5px, transparent 0.5px); background-size:12px 12px; }
         .bubble-in { background:#fff; }
-        .bubble-out { background:#d9fdd3; }
+        .bubble-out { background:#e0e7ff; }
     </style>
 </head>
 <body class="h-full bg-slate-100 text-slate-800">
@@ -23,7 +23,7 @@
         <div class="flex items-center gap-2">
             <button id="backBtn" class="md:hidden hidden text-xl px-1">←</button>
             <span class="font-semibold">💬 Inbox</span>
-            <span id="badge" class="ml-1 text-xs bg-emerald-500 rounded-full px-2 py-0.5 hidden">0</span>
+            <span id="badge" class="ml-1 text-xs bg-indigo-500 rounded-full px-2 py-0.5 hidden">0</span>
         </div>
         <div class="flex items-center gap-2 text-sm">
             <span id="meName" class="text-white/70"></span>
@@ -78,7 +78,7 @@
                     <form id="sendForm" class="flex gap-2 items-end">
                         <textarea id="msgInput" rows="1" placeholder="Type a message"
                             class="flex-1 resize-none border rounded-2xl px-4 py-2 text-sm max-h-32"></textarea>
-                        <button id="sendBtn" class="w-10 h-10 rounded-full bg-emerald-500 hover:bg-emerald-600 text-white shrink-0">➤</button>
+                        <button id="sendBtn" class="w-10 h-10 rounded-full bg-indigo-500 hover:bg-indigo-600 text-white shrink-0">➤</button>
                     </form>
                 </div>
             </div>
@@ -155,7 +155,7 @@ async function loadList() {
 
 function convRow(c) {
     const li = document.createElement('li');
-    li.className = 'p-3 hover:bg-slate-50 cursor-pointer flex gap-3 items-center' + (current === c.id ? ' bg-emerald-50' : '');
+    li.className = 'p-3 hover:bg-slate-50 cursor-pointer flex gap-3 items-center' + (current === c.id ? ' bg-indigo-50' : '');
     li.onclick = () => openConversation(c.id);
     const initials = (c.contact_name || '?').slice(0,2).toUpperCase();
     li.innerHTML = `
@@ -167,7 +167,7 @@ function convRow(c) {
             </div>
             <div class="flex justify-between gap-2">
                 <span class="text-xs text-slate-500 truncate">${esc(c.number)} ${c.assigned_to ? '· '+esc(c.assigned_to) : ''}</span>
-                ${c.unread ? `<span class="text-[11px] bg-emerald-500 text-white rounded-full px-1.5">${c.unread}</span>` : ''}
+                ${c.unread ? `<span class="text-[11px] bg-indigo-500 text-white rounded-full px-1.5">${c.unread}</span>` : ''}
             </div>
         </div>`;
     return li;
@@ -217,7 +217,7 @@ function bubble(m) {
     }
     wrap.innerHTML = `
         <div class="max-w-[75%] rounded-lg px-3 py-2 shadow-sm ${out ? 'bubble-out' : 'bubble-in'}">
-            ${out && m.sender ? `<div class="text-[11px] font-medium text-emerald-700 mb-0.5">${esc(m.sender)}</div>` : ''}
+            ${out && m.sender ? `<div class="text-[11px] font-medium text-indigo-700 mb-0.5">${esc(m.sender)}</div>` : ''}
             ${media}
             ${m.body ? `<div class="text-sm whitespace-pre-wrap break-words">${esc(m.body)}</div>` : ''}
             <div class="text-[10px] text-slate-400 text-right mt-0.5">${timeFmt(m.sent_at)} ${out ? tick(m.status) : ''}</div>
